@@ -762,12 +762,17 @@ export class Client extends EventEmitter {
 				break;
 			}
 		}
-		if (!token) {
+		let headers = {};
+		if (token) {
+			headers = {...headers, Authorization: `Bearer ${token}`};
+		}
+		if (this.opts.cookie) {
+			headers = {...headers, Cookie: `d=${this.opts.cookie}`};
+		}
+		if (Object.keys(headers).length === 0) {
 			return await Util.DownloadFile(url);
 		} else {
-			return await Util.DownloadFile(url, {
-				headers: { Authorization: `Bearer ${token}` },
-			});
+			return await Util.DownloadFile(url, { headers });
 		}
 	}
 
